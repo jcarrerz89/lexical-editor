@@ -7,15 +7,23 @@ import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin';
 import ExampleTheme from './lexical.theme';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 import {useLexicalComposerContext} from "@lexical/react/LexicalComposerContext";
-import {useEffect, useLayoutEffect, useRef, useState} from "react";
-import {$getRoot, $insertNodes, CLEAR_HISTORY_COMMAND, EditorState} from "lexical";
+import {useEffect, useLayoutEffect, useRef} from "react";
+import {$getRoot, CLEAR_HISTORY_COMMAND} from "lexical";
 import {$generateHtmlFromNodes, $generateNodesFromDOM} from '@lexical/html';
 
-
-interface ILexicalEditor {
+interface LexicalEditorProps {
     placeholder: string,
     html?: string,
     onChange: (text: string) => void,
+}
+
+interface SetInitialValuePluginProps {
+    initHtml: string
+}
+
+interface MyOnChangePluginProps {
+    html?: string;
+    onChange: (html: string) => void
 }
 
 const editorConfig = {
@@ -27,7 +35,7 @@ const editorConfig = {
     theme: ExampleTheme,
 };
 
-const MyOnChangePlugin: React.FC<{ html?: string, onChange: (html: string) => void }> = ({html, onChange}) => {
+const MyOnChangePlugin: React.FC<MyOnChangePluginProps> = ({html, onChange}) => {
     const [editor] = useLexicalComposerContext();
     const initHtml = useRef(html);
 
@@ -46,7 +54,7 @@ const MyOnChangePlugin: React.FC<{ html?: string, onChange: (html: string) => vo
     return null;
 }
 
-export const SetInitialValuePlugin: React.FC<{ initHtml: string }> = ({initHtml = ''}) => {
+export const SetInitialValuePlugin: React.FC<SetInitialValuePluginProps> = ({initHtml = ''}) => {
     const [editor] = useLexicalComposerContext();
 
     useLayoutEffect(() => {
@@ -74,7 +82,7 @@ export const SetInitialValuePlugin: React.FC<{ initHtml: string }> = ({initHtml 
     return null;
 };
 
-const LexicalEditor: React.FC<ILexicalEditor> = ({placeholder, html, onChange}) => {
+const LexicalEditor: React.FC<LexicalEditorProps> = ({placeholder, html, onChange}) => {
     const onTextChange = (text: string) => {
         onChange(text);
     }

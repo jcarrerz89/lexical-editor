@@ -1,8 +1,8 @@
-interface ILexicalEditor {
+interface LexicalEditorProps {
     placeholder: string;
     html?: string;
     onChange: (text: string) => void;
 }
-declare const LexicalEditor: React.FC<ILexicalEditor>;
+declare const LexicalEditor: React.FC<LexicalEditorProps>;
 
 export { LexicalEditor };
