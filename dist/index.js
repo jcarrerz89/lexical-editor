@@ -236,27 +236,17 @@ function ToolbarPlugin() {
   ] });
 }
 
-// src/LexicalEditor.tsx
+// src/plugins/OnChangePlugin.tsx
 import { useLexicalComposerContext as useLexicalComposerContext2 } from "@lexical/react/LexicalComposerContext";
-import { useEffect as useEffect2, useLayoutEffect, useRef as useRef2 } from "react";
-import { $getRoot, CLEAR_HISTORY_COMMAND } from "lexical";
+import { useEffect as useEffect2, useRef as useRef2 } from "react";
 
 // node_modules/@lexical/html/LexicalHtml.node.mjs
 var mod = await (process.env.NODE_ENV === "development" ? import("./LexicalHtml.dev-YU7X4P5W.js") : import("./LexicalHtml.prod-U7EXUXMX.js"));
 var $generateHtmlFromNodes = mod.$generateHtmlFromNodes;
 var $generateNodesFromDOM = mod.$generateNodesFromDOM;
 
-// src/LexicalEditor.tsx
-import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
-var editorConfig = {
-  namespace: "React.js Demo",
-  nodes: [],
-  onError(error) {
-    throw error;
-  },
-  theme: lexical_theme_default
-};
-var MyOnChangePlugin = ({ html, onChange }) => {
+// src/plugins/OnChangePlugin.tsx
+var OnChangePlugin = ({ html, onChange }) => {
   const [editor] = useLexicalComposerContext2();
   const initHtml = useRef2(html);
   useEffect2(() => {
@@ -271,8 +261,14 @@ var MyOnChangePlugin = ({ html, onChange }) => {
   }, [editor, onChange]);
   return null;
 };
+var OnChangePlugin_default = OnChangePlugin;
+
+// src/plugins/SetInitialValuePlugin.tsx
+import { useLexicalComposerContext as useLexicalComposerContext3 } from "@lexical/react/LexicalComposerContext";
+import { useLayoutEffect } from "react";
+import { $getRoot, CLEAR_HISTORY_COMMAND } from "lexical";
 var SetInitialValuePlugin = ({ initHtml = "" }) => {
-  const [editor] = useLexicalComposerContext2();
+  const [editor] = useLexicalComposerContext3();
   useLayoutEffect(() => {
     if (editor && initHtml) {
       editor.update(() => {
@@ -292,6 +288,18 @@ var SetInitialValuePlugin = ({ initHtml = "" }) => {
     }
   }, [initHtml]);
   return null;
+};
+var SetInitialValuePlugin_default = SetInitialValuePlugin;
+
+// src/LexicalEditor.tsx
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+var editorConfig = {
+  namespace: "LexicalEditor",
+  nodes: [],
+  onError(error) {
+    throw error;
+  },
+  theme: lexical_theme_default
 };
 var LexicalEditor = ({ placeholder, html, onChange }) => {
   const onTextChange = (text) => {
@@ -314,8 +322,8 @@ var LexicalEditor = ({ placeholder, html, onChange }) => {
           ErrorBoundary: LexicalErrorBoundary
         }
       ),
-      /* @__PURE__ */ jsx2(MyOnChangePlugin, { html, onChange: onTextChange }),
-      /* @__PURE__ */ jsx2(SetInitialValuePlugin, { initHtml: html }),
+      /* @__PURE__ */ jsx2(OnChangePlugin_default, { html, onChange: onTextChange }),
+      /* @__PURE__ */ jsx2(SetInitialValuePlugin_default, { initHtml: html }),
       /* @__PURE__ */ jsx2(HistoryPlugin, {}),
       /* @__PURE__ */ jsx2(AutoFocusPlugin, {})
     ] })

@@ -6,10 +6,8 @@ import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
 import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin';
 import ExampleTheme from './lexical.theme';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import {useLexicalComposerContext} from "@lexical/react/LexicalComposerContext";
-import {useEffect, useLayoutEffect, useRef} from "react";
-import {$getRoot, CLEAR_HISTORY_COMMAND} from "lexical";
-import {$generateHtmlFromNodes, $generateNodesFromDOM} from '@lexical/html';
+import OnChangePlugin from "./plugins/OnChangePlugin";
+import SetInitialValuePlugin from "./plugins/SetInitialValuePlugin";
 
 interface LexicalEditorProps {
     placeholder: string,
@@ -17,69 +15,13 @@ interface LexicalEditorProps {
     onChange: (text: string) => void,
 }
 
-interface SetInitialValuePluginProps {
-    initHtml: string
-}
-
-interface MyOnChangePluginProps {
-    html?: string;
-    onChange: (html: string) => void
-}
-
 const editorConfig = {
-    namespace: 'React.js Demo',
+    namespace: 'LexicalEditor',
     nodes: [],
     onError(error: Error) {
         throw error;
     },
     theme: ExampleTheme,
-};
-
-const MyOnChangePlugin: React.FC<MyOnChangePluginProps> = ({html, onChange}) => {
-    const [editor] = useLexicalComposerContext();
-    const initHtml = useRef(html);
-
-    useEffect(() => {
-        return editor.registerUpdateListener(({editorState}) => {
-            editorState.read(() => {
-                const htmlString = $generateHtmlFromNodes(editor, null);
-
-                if (initHtml.current !== htmlString) {
-                    onChange(htmlString);
-                }
-            });
-        });
-    }, [editor, onChange]);
-
-    return null;
-}
-
-export const SetInitialValuePlugin: React.FC<SetInitialValuePluginProps> = ({initHtml = ''}) => {
-    const [editor] = useLexicalComposerContext();
-
-    useLayoutEffect(() => {
-        if (editor && initHtml) {
-            editor.update(() => {
-                const content = $generateHtmlFromNodes(editor, null);
-
-                if (!!initHtml && content !== initHtml) {
-                    const parser = new DOMParser();
-                    const dom = parser.parseFromString(initHtml, 'text/html');
-                    const nodes = $generateNodesFromDOM(editor, dom);
-
-                    const root = $getRoot();
-                    root.clear();
-
-                    const selection = root.select();
-                    selection.removeText();
-                    selection.insertNodes(nodes);
-                    editor.dispatchCommand(CLEAR_HISTORY_COMMAND, null);
-                }
-            });
-        }
-    }, [initHtml]);
-
-    return null;
 };
 
 const LexicalEditor: React.FC<LexicalEditorProps> = ({placeholder, html, onChange}) => {
@@ -103,7 +45,7 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({placeholder, html, onChang
                             }
                             ErrorBoundary={LexicalErrorBoundary}
                         />
-                        <MyOnChangePlugin html={html} onChange={onTextChange}/>
+                        <OnChangePlugin html={html} onChange={onTextChange}/>
                         <SetInitialValuePlugin initHtml={html}/>
                         <HistoryPlugin/>
                         <AutoFocusPlugin/>
