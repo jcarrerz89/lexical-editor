@@ -1,4 +1,12 @@
 export const LexicalStyle = {
+    body: {
+        margin: "0",
+        background: "#eee",
+        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif",
+        fontWeight: "500",
+        WebkitFontSmoothing: "antialiased",
+        MozOsxFontSmoothing: "grayscale",
+    },
     otherH2: {
         fontSize: "18px",
         color: "#444",
