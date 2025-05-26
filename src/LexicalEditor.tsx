@@ -13,7 +13,7 @@ import SetInitialValuePlugin from "./plugins/SetInitialValuePlugin";
 
 interface LexicalEditorProps {
     placeholder: string,
-    html?: string,
+    html: string,
     onChange: (text: string) => void,
 }
 
